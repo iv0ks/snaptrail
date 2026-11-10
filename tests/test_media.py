@@ -32,7 +32,7 @@ def client(tmp_path, monkeypatch):
     (photos_dir / "sunrise-bali.jpg").write_text("fake-jpeg-bytes-sunrise\n")
     (photos_dir / "tokyo-night.jpg").write_text("fake-jpeg-bytes-tokyo\n")
     (photos_dir / "patagonia-trek.jpg").write_text("fake-jpeg-bytes-patagonia\n")
-    (tmp_path / "flag.txt").write_text("FLAG{P4TH_TR4V3RS4L_L3V3L_2}\n")
+    (tmp_path / "flag.txt").write_text("FLAG{SNAPTRAIL_OFF_THE_TRAIL}\n")
 
     # Point the factory at the temp root (read at create_app() time).
     monkeypatch.setenv("DATA_ROOT", str(tmp_path))

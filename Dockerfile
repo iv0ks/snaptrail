@@ -40,7 +40,7 @@ COPY photos ./photos
 # container runs with a read-only root filesystem, so the app cannot write it
 # at runtime. When running straight from Python the app seeds it itself; here
 # it already exists, so that seed is a no-op. Override with --build-arg FLAG=...
-ARG FLAG=FLAG{P4TH_TR4V3RS4L_L3V3L_2}
+ARG FLAG=FLAG{SNAPTRAIL_OFF_THE_TRAIL}
 RUN printf '%s\n' "$FLAG" > /app/flag.txt
 
 USER appuser

