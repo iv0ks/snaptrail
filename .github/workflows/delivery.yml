@@ -1,26 +1,34 @@
-# Continous Delivery workflow.
+# Continuous Delivery workflow.
+#
+# Builds and publishes the Docker image, then scans it. Triggered only by semver release tags (v1.2.3) created by release-please, so arbitrary tags never trigger a publish to GHCR.
 name: Delivery
 
 # Define the event that triggers the workflow.
-# Run when a tag is pushed, build the docker image and push to ghcr.
+# Run only on semver tags (vMAJOR.MINOR.PATCH), not on every tag.
 on:
   push:
     tags:
-      - "*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
-# Required permission.
+# Only one delivery per tag at a time.
+concurrency:
+  group: delivery-${{ github.ref }}
+  cancel-in-progress: false
+
+# Required permissions: read the repo and write packages to GHCR.
 permissions:
   contents: read
   packages: write
 
 # Define the jobs that run in the workflow.
 jobs:
-  # Job-1: Build and Push Docker Image to GHCR.
+  # Job-1: Build and push the Docker image to GHCR.
   build:
-    name: Image
+    name: Build
     uses: iv0ks/cicd-hub/.github/workflows/build-push.yml@main
 
-  # Job-2: Scan Docker Image.
+  # Job-2: Scan the published image for vulnerabilities. Runs only if the
+  # build succeeded.
   image-scan:
     name: Image
     needs: build

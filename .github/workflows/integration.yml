@@ -1,30 +1,55 @@
-# Continous Integration workflow.
+# Continuous Integration workflow.
+#
+# Runs the pull request quality gates by calling the reusable workflows hosted in the iv0ks/cicd-hub repository. The jobs are chained with `needs` so they
+# run sequentially and fail fast: a leaked secret stops the pipeline before we spend time on dependency, lint or test checks. 
 name: Integration
 
 # Define the event that triggers the workflow.
-# Run when a PR is created or syncronized.
+# Run when a PR targeting main is opened or updated with new commits.
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
+    # Only run this workflow for pull requests targeting the main branch.
     branches: [main]
+    # Only run for pull requests created by developers or dependabot.
+    # NOTE: This files only should be modified in release-please prs.
+    paths-ignore:
+      - '.release-please-manifest.json'
+      - 'pyproject.toml'
+      - 'CHANGELOG.md'
 
-# Required permission.
+# Cancel an in-progress run when new commits are pushed to the same PR, so we
+# only ever spend CI minutes on the latest state of the branch.
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least-privilege: the called workflows only need to read the repository.
 permissions:
   contents: read
 
 jobs:
-  # Job-1: Scan for leaked secrets.
+  # Job-1: Scan the repository for leaked secrets (credentials, tokens, keys).
+  # Runs first because a committed secret is the most urgent thing to catch.
   secrets:
-    name: Security
+    name: Secrets
     uses: iv0ks/cicd-hub/.github/workflows/secrets-scan.yml@main
 
-  # Job-2: Lint (ruff + black).
-  lint:
-    name: Code
+  # Job-2: Scan dependencies and IaC for known vulnerabilities (CVEs). 
+  # Runs only if the secrets scan passed. This is the gate that catches vulnerable dependencies, including Dependabot PRs.
+  vuln:
+    name: Vulnerabilities
     needs: secrets
+    uses: iv0ks/cicd-hub/.github/workflows/vuln-scan.yml@main
+
+  # Job-3: Lint and format check (ruff + black). Runs only if the vuln scan passed.
+  lint:
+    name: Lint
+    needs: vuln
     uses: iv0ks/cicd-hub/.github/workflows/python-lint.yml@main
 
-  # Job-3: Run the test suite (pytest).
+  # Job-4: Run the test suite (pytest). Runs only if lint passed.
   test:
-    name: Code
+    name: Test
     needs: lint
     uses: iv0ks/cicd-hub/.github/workflows/python-test.yml@main
