@@ -1,0 +1,32 @@
+[project]
+name = "snaptrail"
+version = "0.1.0"
+description = "Snaptrail — Intentionally vulnerable path traversal lab (Flask)"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "S", "UP"]
+# S104: bind to 0.0.0.0 and S101/assert are fine in this lab context.
+# The whole app is intentionally insecure; we keep security linting on but
+# silence the rules that fight the lab's purpose.
+ignore = ["S104"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/main.py" = ["S104"]
+# Tests use assert and knowingly exercise the traversal; silence those rules.
+"tests/*" = ["S101", "S310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
