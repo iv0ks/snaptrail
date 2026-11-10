@@ -1,4 +1,4 @@
-# 🏔️ Snaptrail
+# Snaptrail
 
 [![GHCR](https://img.shields.io/badge/ghcr.io-iv0ks%2Fsnaptrail-blue?logo=docker)](https://github.com/iv0ks/snaptrail/pkgs/container/snaptrail)
 
@@ -6,7 +6,9 @@
 **Snaptrail is an intentionally vulnerable application built for security education.** It contains a deliberate [path traversal](https://owasp.org/www-community/attacks/Path_Traversal)
 (CWE-22) flaw — hidden behind a forced base-path prefix — so you can practice finding and exploiting it in a safe and controlled environment.
 
-### 🗂️ Project layout
+<br>
+
+## 🗂️ Project layout
 
 The repository is organised so the vulnerable code is easy to find and reason
 about. Three areas, clearly separated: the **application** itself in `app/`
@@ -45,9 +47,9 @@ snaptrail/
 
 The application code lives in `app/` and reads its photos from `photos/`, just like a real service would. The target `flag.txt` is **not** in the repo: the `Dockerfile` writes it to `/app/flag.txt` at build time.
 
-</br>
+<br>
 
-### 🚀 The Lab
+## 🚀 The Lab
 
 The lab ships as a Docker Compose stack with two services:
 
@@ -110,9 +112,9 @@ docker run --rm -p 5000:5000 ghcr.io/iv0ks/snaptrail:latest
 
 Then open <http://localhost:5000>.
 
-</br>
+<br>
 
-### 🎯 The Challenge
+## 🎯 The Challenge
 
 Snaptrail serves your photos from a gallery directory. The endpoint always
 prepends that directory to the requested filename — a *forced prefix* the
