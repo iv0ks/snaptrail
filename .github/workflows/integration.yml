@@ -1,0 +1,30 @@
+# Continous Integration workflow.
+name: Integration
+
+# Define the event that triggers the workflow.
+# Run when a PR is created or syncronized.
+on:
+  pull_request:
+    branches: [main]
+
+# Required permission.
+permissions:
+  contents: read
+
+jobs:
+  # Job-1: Scan for leaked secrets.
+  secrets:
+    name: Security
+    uses: iv0ks/cicd-hub/.github/workflows/secrets-scan.yml@main
+
+  # Job-2: Lint (ruff + black).
+  lint:
+    name: Code
+    needs: secrets
+    uses: iv0ks/cicd-hub/.github/workflows/python-lint.yml@main
+
+  # Job-3: Run the test suite (pytest).
+  test:
+    name: Code
+    needs: lint
+    uses: iv0ks/cicd-hub/.github/workflows/python-test.yml@main
