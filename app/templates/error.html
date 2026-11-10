@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snaptrail — Error {{ status }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1><span aria-hidden="true">🏔️</span> Snaptrail</h1>
+    <p class="error-code">{{ status }}</p>
+    <p class="error-message">{{ message }}</p>
+    <p><a class="back" href="/">← Back to your gallery</a></p>
+</body>
+</html>

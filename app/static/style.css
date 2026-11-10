@@ -1,0 +1,95 @@
+:root {
+    --accent: #0f766e;
+    --accent-contrast: #ffffff;
+    --text: #1a1a2e;
+    --muted: #555;
+    --faint: #888;
+    --border: #e0e0e0;
+    --code-bg: #f2f2f7;
+    --bg: #ffffff;
+    --card-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --accent: #5eead4;
+        --accent-contrast: #0b1f1c;
+        --text: #ececf1;
+        --muted: #b0b0bd;
+        --faint: #8a8a99;
+        --border: #2c2c3a;
+        --code-bg: #23232e;
+        --bg: #0f1420;
+        --card-bg: #19202c;
+    }
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 640px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    color: var(--text);
+    background: var(--bg);
+}
+
+h1 {
+    margin-bottom: 0.25rem;
+}
+
+p.sub {
+    color: var(--muted);
+    margin-top: 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+}
+
+a.btn {
+    text-decoration: none;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+code {
+    background: var(--code-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+}
+
+footer {
+    margin-top: 2rem;
+    color: var(--faint);
+    font-size: 0.85rem;
+}
+
+/* Error page */
+.error-code {
+    font-size: 3rem;
+    margin-bottom: 0.25rem;
+    color: var(--accent);
+}
+
+.error-message {
+    color: var(--muted);
+}
+
+a.back {
+    color: var(--accent);
+}

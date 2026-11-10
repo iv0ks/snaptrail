@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snaptrail — Your travel gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1><span aria-hidden="true">🏔️</span> Snaptrail</h1>
+    <p class="sub">Your travel photo gallery — relive the trips.</p>
+    <ul>
+    {% for photo in photos %}
+        <li>
+            <span><span aria-hidden="true">🖼️</span> {{ photo }}</span>
+            <a class="btn" href="/media?name={{ photo }}"
+               aria-label="Open {{ photo }}">Open</a>
+        </li>
+    {% endfor %}
+    </ul>
+    <footer>
+        Snaptrail — photos are served from your gallery via
+        <code>/media?name=&lt;filename&gt;</code>.
+    </footer>
+</body>
+</html>
