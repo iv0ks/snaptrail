@@ -1,0 +1,77 @@
+services:
+  # Open-source HTTP reverse proxy and load balancer designed for cloud-native infrastructure, 
+  # microservices, and containerized environments.
+  traefik:
+    image: "traefik:v3.7.14" # Use a specific, stable version for reliability.
+    container_name: "traefik"
+    security_opt:
+      - "no-new-privileges:true" # Hardening: no setuid/setgid elevation.
+    deploy:
+      resources:
+        limits:
+          memory: 256M # Traefik is efficient; 256MB is plenty.
+    # Namecheap API credentials for the ACME DNS-01 challenge (lego reads these
+    # from the environment). Keep the real values in a local .env file that is
+    # NOT committed — see .env.example.
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ${ROOT_PATH:-.}/tools/traefik:/etc/traefik # Mount config directory (GitOps ready).
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Read-only access for service discovery.
+    ports:
+      - "80:80"     # HTTP port (redirects to HTTPS).
+      - "443:443"   # HTTPS port for secure traffic.
+      - "8080:8080" # Dashboard port (insecure, local use only).
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # For accessing host services from the container.
+    networks:
+      - iv0ks-dev # Connect to the local network.
+    labels:
+      - "traefik.enable=true"
+      # This tells Traefik to fetch a cert for both domain and wildcard.
+      - "traefik.http.routers.dashboard.tls.certresolver=namecheap"
+      - "traefik.http.routers.dashboard.tls.domains[0].main=*.iv0ks.dev"
+      - "traefik.http.routers.dashboard.tls.domains[0].sans=iv0ks.dev"
+      # Connect the router to the internal dashboard service.
+      - "traefik.http.routers.dashboard.service=api@internal"
+      # Use the secure entrypoint for the dashboard.
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.iv0ks.dev`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls=true"
+
+  # Flask app to practice path traversal (CWE-22) 
+  # — A hands-on AppSec lab with Docker.
+  snaptrail:
+    image: ghcr.io/iv0ks/snaptrail:latest
+    container_name: snaptrail
+    restart: unless-stopped
+    read_only: true
+    # gunicorn runs with --worker-tmp-dir /tmp and the root FS is read-only,
+    # so /tmp must be a writable tmpfs or the workers crash-loop with
+    # "OSError: [Errno 30] Read-only file system: '/tmp/wgunicorn-...'".
+    tmpfs:
+      - /tmp
+    # gunicorn 26.x's control server writes a socket under $HOME/.gunicorn.
+    # appuser's home is on the read-only root FS, so point HOME at the writable
+    # tmpfs to avoid: "Control server error: [Errno 30] Read-only file system:
+    # '/home/appuser/.gunicorn'".
+    environment:
+      - HOME=/tmp
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.snaptrail.rule=Host(`snaptrail.iv0ks.dev`)"
+      - "traefik.http.routers.snaptrail.entrypoints=websecure"
+      - "traefik.http.routers.snaptrail.tls=true"
+      - "traefik.http.routers.snaptrail.tls.certresolver=namecheap"
+      - "traefik.http.services.snaptrail.loadbalancer.server.port=5000"
+    networks:
+      - iv0ks-dev
+
+# This tells Docker the network is managed elsewhere.
+# Note: This network must be created manually with `docker network create iv0ks-dev` before deploying this stack.
+networks:
+  iv0ks-dev:
+    external: true # This tells Docker the network is managed elsewhere.
