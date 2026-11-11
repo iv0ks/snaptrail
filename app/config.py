@@ -32,8 +32,12 @@ FLAG_FILENAME = "flag.txt"
 DEFAULT_FLAG = "FLAG{SNAPTRAIL_OFF_THE_TRAIL}"
 
 # Photos shown on the gallery so the app behaves like a real product.
+# Filenames must match the images in photos/ (see tools/generate_photos.py).
 LISTED_PHOTOS = [
     "sunrise-bali.jpg",
     "tokyo-night.jpg",
     "patagonia-trek.jpg",
+    "santorini-blue.jpg",
+    "sahara-dunes.jpg",
+    "iceland-aurora.jpg",
 ]
