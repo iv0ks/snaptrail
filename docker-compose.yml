@@ -43,7 +43,7 @@ services:
   # Flask app to practice path traversal (CWE-22) 
   # — A hands-on AppSec lab with Docker.
   snaptrail:
-    image: ghcr.io/iv0ks/snaptrail:latest
+    image: ghcr.io/iv0ks/snaptrail:v1.1.0
     container_name: snaptrail
     restart: unless-stopped
     read_only: true
