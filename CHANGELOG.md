@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/iv0ks/snaptrail/compare/v1.0.0...v1.1.0) (2026-11-11)
+
+
+### Features
+
+* add branded compass favicon ([e9fb86d](https://github.com/iv0ks/snaptrail/commit/e9fb86db3b98d0bad51b0ad2e2904824459b5812))
+* generate real gallery images with pillow ([e1d49c6](https://github.com/iv0ks/snaptrail/commit/e1d49c66bb3e88dfb02c497366d227bfa49f71d0))
+* link favicon in page head ([a7a6253](https://github.com/iv0ks/snaptrail/commit/a7a62534cde739ab702b7e7a5da08355717820c4))
+* list all six gallery photos ([a55d352](https://github.com/iv0ks/snaptrail/commit/a55d352a159848e5e199df2c5247a512af88a3e2))
+* redesign gallery frontend with header, hero, thumbnail grid and footer ([ef493c1](https://github.com/iv0ks/snaptrail/commit/ef493c17e7c7aa399c5c15604b37cb3291a338eb))
+* remove tagline from footer ([1754583](https://github.com/iv0ks/snaptrail/commit/1754583fa49a0fe8986c711c85a78b3fa240c3d1))
+
 ## [1.0.0](https://github.com/iv0ks/snaptrail/compare/v1.0.0...v1.0.0) (2026-11-11)
 
 
