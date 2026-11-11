@@ -7,20 +7,41 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1><span aria-hidden="true">🏔️</span> Snaptrail</h1>
-    <p class="sub">Your travel photo gallery — relive the trips.</p>
-    <ul>
-    {% for photo in photos %}
-        <li>
-            <span><span aria-hidden="true">🖼️</span> {{ photo }}</span>
-            <a class="btn" href="/media?name={{ photo }}"
-               aria-label="Open {{ photo }}">Open</a>
-        </li>
-    {% endfor %}
-    </ul>
-    <footer>
-        Snaptrail — photos are served from your gallery via
-        <code>/media?name=&lt;filename&gt;</code>.
+    <header class="site-header">
+        <div class="brand">
+            <span class="brand-mark" aria-hidden="true">🧭</span>
+            <span class="brand-name">Snaptrail</span>
+        </div>
+        <nav class="site-nav">
+            <a href="/" class="active">Gallery</a>
+            <a href="#" aria-disabled="true">Albums</a>
+            <a href="#" aria-disabled="true">Map</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Your journeys, one frame at a time.</h1>
+        <p>Every photo you’ve ever uploaded to Snaptrail — from sunrise in Bali
+           to the northern lights. Tap any shot to open it full-size.</p>
+    </section>
+
+    <main class="gallery" aria-label="Photo gallery">
+        {% for photo in photos %}
+        {% set caption = photo.rsplit('.', 1)[0].replace('-', ' ').title() %}
+        <figure class="card">
+            <a href="/media?name={{ photo }}" aria-label="Open {{ caption }}">
+                <img class="thumb" src="/media?name={{ photo }}"
+                     alt="{{ caption }}" loading="lazy">
+            </a>
+            <figcaption>{{ caption }}</figcaption>
+        </figure>
+        {% endfor %}
+    </main>
+
+    <footer class="site-footer">
+        <p>© Snaptrail — photos are served from your gallery via
+           <code>/media?name=&lt;filename&gt;</code>.</p>
+        <p class="muted">Made for travellers who never stop exploring.</p>
     </footer>
 </body>
 </html>
