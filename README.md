@@ -123,4 +123,29 @@ developer believes keeps you inside the gallery. Your goal:
 > **Read a file that lives _outside_ the gallery — specifically, capture the
 > flag stored in `flag.txt`.**
 
-The flag has the format `FLAG{...}`. A full walkthrough lives in [SOLUTION.md](SOLUTION.md).
+The flag has the format `FLAG{...}`.
+
+| | |
+|---|---|
+| **Vulnerability** | Path Traversal (CWE-22) |
+| **Difficulty** | ⭐⭐ Level 2 — a forced base-path prefix |
+| **Stack** | Python · Flask |
+| **Entry point** | `GET /media?name=<name>` |
+
+<details>
+<summary>Hint 1</summary>
+Open a photo and watch the request in Burp. The filename goes into a
+<code>?name=</code> parameter.
+</details>
+
+<details>
+<summary>Hint 2</summary>
+The app always prepends the gallery folder — but that only fixes where the path
+<em>starts</em>. What happens to the result if the filename then walks back up
+with <code>../</code>?
+</details>
+
+A full walkthrough lives in [SOLUTION.md](SOLUTION.md) (spoilers!).
+
+New to path traversal, or want a guided, non-spoiler approach? Start with the
+**[Learning Guide](GUIDE.md)**.
