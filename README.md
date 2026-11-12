@@ -1,21 +1,38 @@
 # Snaptrail
 
+![CWE-22](https://img.shields.io/badge/CWE--22-Path%20Traversal-red?style=flat-square)
+![Python](https://img.shields.io/badge/Python-Flask-blue?style=flat-square&logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/Lab-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 [![GHCR](https://img.shields.io/badge/ghcr.io-iv0ks%2Fsnaptrail-blue?logo=docker)](https://github.com/iv0ks/snaptrail/pkgs/container/snaptrail)
-
 
 **Snaptrail is an intentionally vulnerable application built for security education.** It contains a deliberate [path traversal](https://owasp.org/www-community/attacks/Path_Traversal)
 (CWE-22) flaw — hidden behind a forced base-path prefix — so you can practice finding and exploiting it in a safe and controlled environment.
 
 <br>
 
-## 🗂️ Project layout
+<div align="center">
+
+| 🛡️ Vulnerability | 🎯 Difficulty | 🛠️ Stack | 🚩 Entry point |
+| :--- | :--- | :--- | :--- |
+| Path Traversal (CWE-22) | ⭐⭐ Level 2 (Forced prefix) | Python · Flask | `GET /media?name=<name>` |
+
+</div>
+
+<br>
+
+> [!NOTE]
+> The guided, spoiler-free path is [GUIDE.md](GUIDE.md); the full answer waits in [SOLUTION.md](SOLUTION.md) whenever you want it.
+
+<br>
+
+## 📂 Project layout
 
 The repository is organised so the vulnerable code is easy to find and reason
 about. Three areas, clearly separated: the **application** itself in `app/`
 (a small Flask app split into factory, routes and config), the **served data**
-in `photos/` (the directory the app is *meant* to expose), and the **tooling**
+in `photos/` (the directory the app is _meant_ to expose), and the **tooling**
 around it (Docker, CI/CD, linters) that turns the lab into a production-shaped
-project. The challenge flag is deliberately kept *out* of both the repo and the
+project. The challenge flag is deliberately kept _out_ of both the repo and the
 served directory — see the note under the tree.
 
 ```
@@ -64,6 +81,8 @@ create it once before the first run:
 docker network create iv0ks-dev
 ```
 
+<br>
+
 #### Option A — just the app (quickest)
 
 Start only the `snaptrail` service (Compose skips `traefik` when you name a
@@ -79,6 +98,8 @@ The app is now reachable directly at:
 
 That is all you need to start playing with Burp Suite.
 
+<br>
+
 #### Option B — full stack with Traefik (HTTPS + hostname)
 
 Bring up both services to also expose the app through Traefik with TLS:
@@ -87,7 +108,7 @@ Bring up both services to also expose the app through Traefik with TLS:
 docker compose up -d
 ```
 
-Now the *same* app is reachable two ways at once:
+Now the _same_ app is reachable two ways at once:
 
 - **<http://localhost:5000>** — direct, no TLS (handy for quick testing).
 - **<https://snaptrail.iv0ks.dev>** — proxied by Traefik with a real certificate.
@@ -98,9 +119,14 @@ Namecheap, so Traefik needs those API credentials — copy `.env.example` to
 `.env` and fill them in (the `.env` file is gitignored). The dashboard is at
 `https://traefik.iv0ks.dev`.
 
+<br>
+
+> [!CAUTION]
 > The `snaptrail.iv0ks.dev` hostname must resolve to the host running the stack.
 > For purely local experiments, Option A (localhost) is simpler and needs no
 > DNS or certificates.
+
+<br>
 
 #### Running without cloning (prebuilt image)
 
@@ -116,36 +142,26 @@ Then open <http://localhost:5000>.
 
 ## 🎯 The Challenge
 
-Snaptrail serves your photos from a gallery directory. The endpoint always
-prepends that directory to the requested filename — a *forced prefix* the
-developer believes keeps you inside the gallery. Your goal:
+### The Scenario
 
-> **Read a file that lives _outside_ the gallery — specifically, capture the
-> flag stored in `flag.txt`.**
+Snaptrail is a travel photo gallery: it serves images from a `photos/`
+directory, one at a time. The endpoint *always* prepends that directory to the
+filename you ask for — a "forced prefix" the developer believes keeps every
+request inside the gallery. You're going to prove that prefix is not the fence
+it looks like.
 
-The flag has the format `FLAG{...}`.
+### Your objective
 
-| | |
-|---|---|
-| **Vulnerability** | Path Traversal (CWE-22) |
-| **Difficulty** | ⭐⭐ Level 2 — a forced base-path prefix |
-| **Stack** | Python · Flask |
-| **Entry point** | `GET /media?name=<name>` |
+Read a file that lives _outside_ the gallery — specifically, capture the flag in `flag.txt`.
 
-<details>
-<summary>Hint 1</summary>
-Open a photo and watch the request in Burp. The filename goes into a
-<code>?name=</code> parameter.
-</details>
+> [!NOTE]
+> The flag has the format `FLAG{...}`.
 
-<details>
-<summary>Hint 2</summary>
-The app always prepends the gallery folder — but that only fixes where the path
-<em>starts</em>. What happens to the result if the filename then walks back up
-with <code>../</code>?
-</details>
+### The rules
 
-A full walkthrough lives in [SOLUTION.md](SOLUTION.md) (spoilers!).
+Everything happens over HTTP against the running app — no need to
+read the source to win (though you can). The flag is **not** in the repo: it's
+baked into the container, outside `photos/`, so you have to actually reach it.
 
-New to path traversal, or want a guided, non-spoiler approach? Start with the
-**[Learning Guide](GUIDE.md)**.
+> [!TIP]
+> For the full method, the **[Learning Guide](GUIDE.md)** walks you through it.
